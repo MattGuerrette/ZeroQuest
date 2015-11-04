@@ -1,0 +1,6 @@
+[Activity]
+name = ZeroQuest
+bundle_id = edu.rit.ZQMain
+exec = sugar-activity ZQMainActivity.ZQMainActivity
+icon = activity-generic
+activity_version = 1
