@@ -3,7 +3,7 @@ import pygame
 import os;
 
 from pygame import *
-from sprite import Car
+from sprite import *
 from gi.repository import Gtk
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -16,12 +16,7 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 PURPLE = (255, 0, 255)
 
-playerCar = Car(RED, 20, 30)
-playerCar.rect.x = 200
-playerCar.rect.y = 300
 
-# Add the car to the list of objects
-all_sprites_list.add(playerCar)
 
 
 class ZQMain:
@@ -32,8 +27,26 @@ class ZQMain:
 
         self.paused = False
 
+    def init_sprites(self):
 
-        playerCar.image = pygame.image.load("test.png").convert_alpha()
+        #initialize main ui
+        self.mainUI = MainUI();
+        self.mainUI.rect.x = 0
+        self.mainUI.rect.y = 0
+
+        self.space = SpaceBackground()
+        self.space.rect.x = 0
+        self.space.rect.y = 0
+
+        # Add the car to the list of objects
+        all_sprites_list.add(self.space)
+        all_sprites_list.add(self.mainUI)
+
+
+    def update_sprites(self):
+        pass
+
+
 
 
     def set_paused(self, paused):
@@ -53,6 +66,9 @@ class ZQMain:
 
         screen = pygame.display.get_surface()
 
+
+        self.init_sprites()
+
         while self.running:
             # Pump GTK messages.
             while Gtk.events_pending():
@@ -66,18 +82,14 @@ class ZQMain:
                     pygame.display.set_mode(event.size, pygame.RESIZABLE)
 
 
+            self.update_sprites()
+
             # Clear Display
-            screen.fill((255, 255, 255))  # 255 for white
+            screen.fill((100, 149, 237))
 
             #Game Logic
             all_sprites_list.update()
 
-            #Drawing on Screen
-            screen.fill(GREEN)
-            #Draw The Road
-            pygame.draw.rect(screen, GREY, [40,0, 200,300])
-            #Draw Line painting on the road
-            pygame.draw.line(screen, WHITE, [140,0],[140,300],5)
 
             #Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
             all_sprites_list.draw(screen)
@@ -93,7 +105,7 @@ class ZQMain:
 # ./TestGame.py
 def main():
     pygame.init()
-    pygame.display.set_mode((1200, 900), pygame.RESIZABLE)
+    pygame.display.set_mode((600, 450))
     game = ZQMain()
     game.run()
 
