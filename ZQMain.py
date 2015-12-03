@@ -4,19 +4,18 @@ import os;
 
 from pygame import *
 from sprite import *
+from button import *
 from gi.repository import Gtk
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
+spaceBackground = pygame.sprite.Group()
+enemiesList = pygame.sprite.Group()
+buttonList = pygame.sprite.Group()
 all_sprites_list = pygame.sprite.Group()
 
-GREEN = (20, 255, 140)
-GREY = (210, 210 ,210)
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-PURPLE = (255, 0, 255)
 
-
+BUTTONX_START = 50
 
 
 class ZQMain:
@@ -27,26 +26,79 @@ class ZQMain:
 
         self.paused = False
 
+
     def init_sprites(self):
 
+        self.mousePressed = False
+
         #initialize main ui
-        self.mainUI = MainUI();
+        self.mainUI = MainUI()
         self.mainUI.rect.x = 0
         self.mainUI.rect.y = 0
 
         self.space = SpaceBackground()
-        self.space.rect.x = 0
+        self.space.rect.x = -600
         self.space.rect.y = 0
 
+        self.space2 = SpaceBackground()
+        self.space2.rect.x = 0
+        self.space2.rect.y = 0
+
+        self.toaster = EvilToaster()
+        self.toaster.rect.x = 270
+        self.toaster.rect.y = (450/2 - 60) - self.toaster.image.get_height()/2
+
+
+
         # Add the car to the list of objects
-        all_sprites_list.add(self.space)
+        spaceBackground.add(self.space)
+        spaceBackground.add(self.space2)
+
+        enemiesList.add(self.toaster)
+
         all_sprites_list.add(self.mainUI)
 
 
+
+        self.buttons = [Button()] * 8
+        #setup button list
+        self.buttons[0].set_x(BUTTONX_START)
+        self.buttons[0].set_y(240)
+
+        for i in range(1, 4):
+            self.buttons[i] = Button()
+            self.buttons[i].set_x(BUTTONX_START + i * 95)
+            self.buttons[i].set_y(240)
+
+        for i in range(0, 4):
+            self.buttons[i+4] = Button()
+            self.buttons[i+4].set_x(BUTTONX_START + i * 95)
+            self.buttons[i+4].set_y(340)
+
+        self.redButton = RedButton()
+        self.redButton.set_x(475)
+        self.redButton.set_y(280)
+
+    def render_buttons(self, buttons, screen):
+        buttonList.empty()
+        for b in buttons:
+            buttonList.add(b.get_sprite())
+        buttonList.add(self.redButton.get_sprite())
+        buttonList.draw(screen)
+
+
     def update_sprites(self):
-        pass
+        self.space.rect.x += 1.0
+        self.space2.rect.x += 1.0
 
+        if self.space.rect.x >= 600:
+            self.space.rect.x = -600
+        if self.space2.rect.x >= 600:
+            self.space2.rect.x = -600
 
+        for i in range(0, 8):
+            b = self.buttons[i]
+            b.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
 
 
     def set_paused(self, paused):
@@ -64,6 +116,8 @@ class ZQMain:
     def run(self):
         self.running = True
 
+        pygame.display.set_caption("ZeroQuest")
+
         screen = pygame.display.get_surface()
 
 
@@ -80,6 +134,8 @@ class ZQMain:
                     return
                 elif event.type == pygame.VIDEORESIZE:
                     pygame.display.set_mode(event.size, pygame.RESIZABLE)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    self.mousePressed = True;
 
 
             self.update_sprites()
@@ -92,7 +148,16 @@ class ZQMain:
 
 
             #Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
+            spaceBackground.draw(screen)
+
             all_sprites_list.draw(screen)
+
+            enemiesList.draw(screen)
+
+            self.render_buttons(self.buttons, screen)
+
+            self.mousePressed = False;
+
 
             # Flip Display
             pygame.display.flip()
