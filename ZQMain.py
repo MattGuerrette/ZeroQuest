@@ -56,6 +56,11 @@ class ZQMain:
         self.fraction = Fraction(2, 3)
 
 
+        self.fractionDisp = FractionDisplay()
+        self.fractionDisp.rect.x = 350
+        self.fractionDisp.rect.y = 50
+
+
         # Add the car to the list of objects
         spaceBackground.add(self.space)
         spaceBackground.add(self.space2)
@@ -63,6 +68,7 @@ class ZQMain:
         enemiesList.add(self.toaster)
 
         all_sprites_list.add(self.mainUI)
+        all_sprites_list.add(self.fractionDisp)
 
 
         self.font = Font()
@@ -151,6 +157,8 @@ class ZQMain:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.mousePressed = True;
 
+                    self.fraction.mul_fraction(Fraction(3,1))
+
                     self.valButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
                     self.opButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
 
@@ -175,7 +183,7 @@ class ZQMain:
             self.render_buttons(self.opButtons, screen)
 
 
-            self.fraction.render(self.font, screen, 50, 50)
+            self.fraction.render(self.font, screen, 390, 60)
 
             self.mousePressed = False;
 
