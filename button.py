@@ -34,7 +34,11 @@ class Button:
     def check_pressed(self, pressed, x, y):
         if pressed:
             if self.rect.collidepoint(x, y):
-                self.isOn = not self.isOn
+                self.isOn = True
+        return self.isOn
+
+    def set_pressed(self, pressed):
+        self.isOn = pressed
 
 class RedButton(Button):
 

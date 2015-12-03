@@ -5,6 +5,9 @@ import os;
 from pygame import *
 from sprite import *
 from button import *
+from font import *
+from fraction import *
+from buttongroup import *
 from gi.repository import Gtk
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -16,6 +19,7 @@ all_sprites_list = pygame.sprite.Group()
 
 
 BUTTONX_START = 50
+
 
 
 class ZQMain:
@@ -49,6 +53,8 @@ class ZQMain:
         self.toaster.rect.y = (450/2 - 60) - self.toaster.image.get_height()/2
 
 
+        self.fraction = Fraction(2, 3)
+
 
         # Add the car to the list of objects
         spaceBackground.add(self.space)
@@ -59,21 +65,29 @@ class ZQMain:
         all_sprites_list.add(self.mainUI)
 
 
+        self.font = Font()
 
-        self.buttons = [Button()] * 8
+
+        self.valButtons = [Button()] * 4
         #setup button list
-        self.buttons[0].set_x(BUTTONX_START)
-        self.buttons[0].set_y(240)
+        self.valButtons[0].set_x(BUTTONX_START)
+        self.valButtons[0].set_y(240)
 
         for i in range(1, 4):
-            self.buttons[i] = Button()
-            self.buttons[i].set_x(BUTTONX_START + i * 95)
-            self.buttons[i].set_y(240)
+            self.valButtons[i] = Button()
+            self.valButtons[i].set_x(BUTTONX_START + i * 95)
+            self.valButtons[i].set_y(240)
+
+        self.opButtons = [Button()] * 4
 
         for i in range(0, 4):
-            self.buttons[i+4] = Button()
-            self.buttons[i+4].set_x(BUTTONX_START + i * 95)
-            self.buttons[i+4].set_y(340)
+            self.opButtons[i] = Button()
+            self.opButtons[i].set_x(BUTTONX_START + i * 95)
+            self.opButtons[i].set_y(340)
+
+
+        self.valButtonGroup = ButtonGroup(self.valButtons)
+        self.opButtonGroup = ButtonGroup(self.opButtons)
 
         self.redButton = RedButton()
         self.redButton.set_x(475)
@@ -96,9 +110,9 @@ class ZQMain:
         if self.space2.rect.x >= 600:
             self.space2.rect.x = -600
 
-        for i in range(0, 8):
-            b = self.buttons[i]
-            b.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+        #for i in range(0, 8):
+            #b = self.buttons[i]
+            #b.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
 
 
     def set_paused(self, paused):
@@ -137,6 +151,9 @@ class ZQMain:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.mousePressed = True;
 
+                    self.valButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+                    self.opButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+
 
             self.update_sprites()
 
@@ -154,7 +171,11 @@ class ZQMain:
 
             enemiesList.draw(screen)
 
-            self.render_buttons(self.buttons, screen)
+            self.render_buttons(self.valButtons, screen)
+            self.render_buttons(self.opButtons, screen)
+
+
+            self.fraction.render(self.font, screen, 50, 50)
 
             self.mousePressed = False;
 
