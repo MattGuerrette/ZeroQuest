@@ -2,6 +2,8 @@
 import pygame
 import os;
 
+
+from random import *
 from pygame import *
 from sprite import *
 from button import *
@@ -15,11 +17,10 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 spaceBackground = pygame.sprite.Group()
 enemiesList = pygame.sprite.Group()
 buttonList = pygame.sprite.Group()
-all_sprites_list = pygame.sprite.Group()
+mainUI = pygame.sprite.Group()
 
 
 BUTTONX_START = 50
-
 
 
 class ZQMain:
@@ -67,27 +68,28 @@ class ZQMain:
 
         enemiesList.add(self.toaster)
 
-        all_sprites_list.add(self.mainUI)
-        all_sprites_list.add(self.fractionDisp)
+
+        mainUI.add(self.mainUI)
 
 
-        self.font = Font()
+        self.font = Font(22)
 
 
-        self.valButtons = [Button()] * 4
+        self.valButtons = [ValueButton()] * 4
         #setup button list
-        self.valButtons[0].set_x(BUTTONX_START)
-        self.valButtons[0].set_y(240)
 
-        for i in range(1, 4):
-            self.valButtons[i] = Button()
+        for i in range(0, 4):
+            self.valButtons[i] = ValueButton()
             self.valButtons[i].set_x(BUTTONX_START + i * 95)
             self.valButtons[i].set_y(240)
 
-        self.opButtons = [Button()] * 4
+        self.opButtons = [OperatorButton()] * 4
+        self.opButtons[0] = OperatorButton(OperatorType.Add)
+        self.opButtons[1] = OperatorButton(OperatorType.Sub)
+        self.opButtons[2] = OperatorButton(OperatorType.Mul)
+        self.opButtons[3] = OperatorButton(OperatorType.Div)
 
         for i in range(0, 4):
-            self.opButtons[i] = Button()
             self.opButtons[i].set_x(BUTTONX_START + i * 95)
             self.opButtons[i].set_y(340)
 
@@ -105,6 +107,14 @@ class ZQMain:
             buttonList.add(b.get_sprite())
         buttonList.add(self.redButton.get_sprite())
         buttonList.draw(screen)
+
+    def render_operators(self, buttons, screen):
+        for b in buttons:
+            b.draw_operator(screen, self.font)
+
+    def render_values(self, buttons, screen):
+        for b in buttons:
+            b.draw_value(screen, self.font)
 
 
     def update_sprites(self):
@@ -163,28 +173,29 @@ class ZQMain:
                     self.valButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
                     self.opButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
 
+                    if self.redButton.check_point( pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]):
+                        if self.mousePressed:
+                            for b in self.valButtons:
+                                b.generate_value()
+
 
             self.update_sprites()
 
             # Clear Display
             screen.fill((100, 149, 237))
 
-            #Game Logic
-            all_sprites_list.update()
-
-
             #Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
             spaceBackground.draw(screen)
 
-            all_sprites_list.draw(screen)
+            mainUI.draw(screen)
 
             enemiesList.draw(screen)
 
             self.render_buttons(self.valButtons, screen)
             self.render_buttons(self.opButtons, screen)
 
-
-            self.fraction.render(self.font, screen, 390, 60)
+            self.render_operators(self.opButtons, screen)
+            self.render_values(self.valButtons, screen)
 
             self.mousePressed = False;
 
