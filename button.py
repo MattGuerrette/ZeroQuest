@@ -37,6 +37,9 @@ class Button:
                 self.isOn = True
         return self.isOn
 
+    def check_point(self, x, y):
+        return self.rect.collidepoint(x, y)
+
     def set_pressed(self, pressed):
         self.isOn = pressed
 

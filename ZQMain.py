@@ -157,6 +157,7 @@ class ZQMain:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.mousePressed = True;
 
+
                     self.fraction.mul_fraction(Fraction(3,1))
 
                     self.valButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])

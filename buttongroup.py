@@ -6,15 +6,22 @@ class ButtonGroup:
         self.buttons = buttonArray
 
     def check_pressed(self, pressed, x, y):
-        index = 0
+        inButton = False
+        index = -1
         for i in range(0, 4):
             b = self.buttons[i]
-            checked = b.check_pressed(pressed, x, y)
-            if checked:
-               index = 0
-               break
+            inButton = b.check_point(x, y)
+            if inButton:
+                index = i
+                break
 
-        for i in range(0, 4):
-            b = self.buttons[i]
-            if i != index:
+        if inButton:
+            for i in range(0, 4):
+                b = self.buttons[i]
                 b.set_pressed(False)
+            if pressed:
+                self.buttons[index].set_pressed(True)
+
+        # if pressed:
+        #     if index != -1:
+        #         self.buttons[index].set_pressed(True)
