@@ -53,13 +53,17 @@ class ZQMain:
         self.toaster.rect.x = 270
         self.toaster.rect.y = (450/2 - 60) - self.toaster.image.get_height()/2
 
+        self.robot = SmallRobot()
+        self.robot.rect.x = 270
+        self.robot.rect.y = (450/2 - 60) - self.robot.image.get_height()/2
+
 
         self.fraction = Fraction(2, 3)
 
 
         self.fractionDisp = FractionDisplay()
-        self.fractionDisp.rect.x = 350
-        self.fractionDisp.rect.y = 50
+        self.fractionDisp.sprite.rect.x = 350
+        self.fractionDisp.sprite.rect.y = 65
 
 
         # Add the car to the list of objects
@@ -70,9 +74,11 @@ class ZQMain:
 
 
         mainUI.add(self.mainUI)
+        mainUI.add(self.fractionDisp.get_sprite())
 
 
         self.font = Font(22)
+        self.font2 = Font(16)
 
 
         self.valButtons = [ValueButton()] * 4
@@ -82,6 +88,7 @@ class ZQMain:
             self.valButtons[i] = ValueButton()
             self.valButtons[i].set_x(BUTTONX_START + i * 95)
             self.valButtons[i].set_y(240)
+            self.valButtons[i].generate_value()
 
         self.opButtons = [OperatorButton()] * 4
         self.opButtons[0] = OperatorButton(OperatorType.Add)
@@ -168,15 +175,25 @@ class ZQMain:
                     self.mousePressed = True;
 
 
-                    self.fraction.mul_fraction(Fraction(3,1))
-
                     self.valButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
                     self.opButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
 
                     if self.redButton.check_point( pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]):
                         if self.mousePressed:
-                            for b in self.valButtons:
-                                b.generate_value()
+                            valButton = self.valButtonGroup.get_selected()
+                            opButton = self.opButtonGroup.get_selected()
+                            if valButton != None and opButton != None:
+                                opType = opButton.get_operator()
+                                fraction = Fraction(valButton.get_value(), 1)
+                                if opType == OperatorType.Add:
+                                    self.fractionDisp.fraction.add_fraction(fraction)
+                                elif opType == OperatorType.Sub:
+                                    self.fractionDisp.fraction.sub_fraction(fraction)
+                                elif opType == OperatorType.Mul:
+                                    self.fractionDisp.fraction.mul_fraction(fraction)
+                                elif opType == OperatorType.Div:
+                                    self.fractionDisp.fraction.div_fraction(fraction)
+                                valButton.generate_value()
 
 
             self.update_sprites()
@@ -196,6 +213,8 @@ class ZQMain:
 
             self.render_operators(self.opButtons, screen)
             self.render_values(self.valButtons, screen)
+
+            self.fractionDisp.render_fraction(screen, self.font2)
 
             self.mousePressed = False;
 

@@ -66,6 +66,9 @@ class OperatorButton(Button):
 
         self.operator = OperatorType
 
+    def get_operator(self):
+        return self.operator
+
     def draw_operator(self, surface, font):
         if self.operator == OperatorType.Add:
             opSize = font.text_size("+")
@@ -90,6 +93,9 @@ class ValueButton(Button):
 
         def generate_value(self):
             self.value = randint(0, 10)
+
+        def get_value(self):
+            return self.value
 
 
         def draw_value(self, surface, font):

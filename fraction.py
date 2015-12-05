@@ -1,11 +1,16 @@
 
 from pygame import Surface
+from sprite import DisplayScreen
 
 class Fraction:
 
     def __init__(self, num, den):
         self.numerator = num;
         self.denominator = den;
+        self.divText = ""
+
+    def is_zero(self):
+        return self.numerator == 0
 
     def calculate(self):
         pass
@@ -59,7 +64,48 @@ class Fraction:
 
         numSurface = font.get_text(str(self.numerator))
         denomSurface = font.get_text(str(self.denominator))
-        divSurface = font.get_text("__")
-        surface.blit(numSurface, (x,y))
-        surface.blit(divSurface, ((x-5),y+5))
-        surface.blit(denomSurface, (x,y+25))
+
+        self.divText = "__"
+        values = [len(str(self.numerator)), len(str(self.numerator))]
+        for i in range(1, max(values)):
+            self.divText += "_"
+        numWidth = font.text_size(str(self.numerator))[0]
+        denWidth = font.text_size(str(self.denominator))[0]
+        divWidth = font.text_size(self.divText)[0]
+        divSurface = font.get_text(self.divText)
+        surface.blit(numSurface, (x + (divWidth/2 - numWidth/2) - 5,y))
+        if self.denominator > 1 and self.numerator >= 1:
+            surface.blit(divSurface, ((x-5),y+5))
+            surface.blit(denomSurface, (x + (divWidth/2 - denWidth/2) - 5,y+25))
+
+    def get_size(self, font):
+        numSize = font.text_size(str(self.numerator))
+        divSize = font.text_size(self.divText)
+        denSize = font.text_size(str(self.denominator))
+
+        totalX = divSize[0]
+        totalY = numSize[1] + divSize[1] + denSize[1]
+
+        total = [0] * 2
+        total.append(totalX)
+        total.append(totalY)
+        return total
+
+class FractionDisplay:
+
+        def __init__(self):
+            self.sprite = DisplayScreen()
+            self.fraction = Fraction(1,1)
+
+        def get_sprite(self):
+            return self.sprite
+
+        def set_fraction(self, Fraction):
+            self.fraction = Fraction
+
+        def get_fraction(self):
+            return self.fraction
+
+        def render_fraction(self, surface, font):
+            fractionSize = self.fraction.get_size(font)
+            self.fraction.render(font, surface, self.sprite.rect.x + (self.sprite.rect.width/2 - fractionSize[0]/2) - 5, self.sprite.rect.y + 15)
