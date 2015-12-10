@@ -18,47 +18,73 @@ class Fraction:
     def simplify(self):
 
 
+        isTrue = False
         while (self.numerator % 2) == 0 and (self.denominator % 2) == 0 and self.numerator != 0:
             self.numerator = self.numerator / 2
             self.denominator = self.denominator / 2
+            isTrue = True
 
         while (self.numerator % 3) == 0 and (self.denominator % 3) == 0 and self.numerator != 0:
             self.numerator = self.numerator / 3
             self.denominator = self.denominator / 3
+            isTrue = True
 
         while (self.numerator % 5) == 0 and (self.denominator % 5) == 0 and self.numerator != 0:
             self.numerator = self.numerator / 5
             self.denominator = self.denominator / 5
+            isTrue = True
 
         while (self.numerator % 7) == 0 and (self.denominator % 7) == 0 and self.numerator != 0:
             self.numerator = self.numerator / 7
             self.denominator = self.denominator / 7
+            isTrue = True
 
-        pass
+        return isTrue
 
     def add_fraction(self, other):
         self.numerator = self.numerator * other.denominator + other.numerator * self.denominator
         self.denominator = self.denominator * other.denominator
-        self.simplify()
-        pass
+        #self.simplify()
+
+        if other.numerator == 0:
+            return "Add was not very effective"
+        elif self.numerator == 0:
+            return "Add was super effective!"
+        else:
+            return "The number increased"
+
 
     def sub_fraction(self, other):
         self.numerator = self.numerator * other.denominator - other.numerator * self.denominator
         self.denominator = self.denominator * other.denominator
-        self.simplify()
-        pass
+        #self.simplify()
+
+        if other.numerator == 0:
+            return "Subtract was not very effective"
+        elif self.numerator == 0:
+            return "Subtract was super effective!"
+        else:
+            return "The number decreased"
 
     def mul_fraction(self, other):
         self.numerator = self.numerator * other.numerator
         self.denominator = self.denominator * other.denominator
-        self.simplify()
-        pass
+        if self.simplify() or self.numerator == 0:
+            return "Multiply was super effective!"
+        else:
+            return "Multiply was not very effective"
+
 
     def div_fraction(self, other):
+        if other.numerator == 0:
+            return "ERROR: cannot divide by ZERO, Divide failed."
         self.numerator = self.numerator * other.denominator
         self.denominator = self.denominator * other.numerator
-        self.simplify()
-        pass
+        if self.simplify():
+            return "Divide was super effective!"
+        else:
+            return "Divide was not very effective"
+
 
     def render(self, font, surface, x, y):
 

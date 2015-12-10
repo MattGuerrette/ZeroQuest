@@ -3,8 +3,8 @@ from pygame import font
 
 class Font:
 
-    def __init__(self, fontSize):
-        self._font = font.SysFont("monospace", fontSize)
+    def __init__(self, fontSize, fontname="monospace"):
+        self._font = font.SysFont(fontname, fontSize)
 
 
     def get_text(self, text):

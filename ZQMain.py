@@ -7,7 +7,10 @@ from random import *
 from pygame import *
 from sprite import *
 from button import *
+from health import *
 from font import *
+from game import *
+from messagebox import *
 from fraction import *
 from buttongroup import *
 from gi.repository import Gtk
@@ -18,9 +21,9 @@ spaceBackground = pygame.sprite.Group()
 enemiesList = pygame.sprite.Group()
 buttonList = pygame.sprite.Group()
 mainUI = pygame.sprite.Group()
+fractionDispList = pygame.sprite.Group()
 
-
-BUTTONX_START = 50
+BUTTONX_START = 90
 
 
 class ZQMain:
@@ -31,6 +34,9 @@ class ZQMain:
 
         self.paused = False
 
+        self.level = 0
+
+        self.gameState = GameState.NewLevel
 
     def init_sprites(self):
 
@@ -65,6 +71,8 @@ class ZQMain:
         self.fractionDisp.sprite.rect.x = 350
         self.fractionDisp.sprite.rect.y = 65
 
+        self.heathbar = HealthBar(30, 240)
+
 
         # Add the car to the list of objects
         spaceBackground.add(self.space)
@@ -74,12 +82,17 @@ class ZQMain:
 
 
         mainUI.add(self.mainUI)
-        mainUI.add(self.fractionDisp.get_sprite())
+        fractionDispList.add(self.fractionDisp.get_sprite())
 
 
-        self.font = Font(22)
-        self.font2 = Font(16)
+        self.font = Font(26, "assets/Play-Bold.ttf")
+        self.font2 = Font(20, "assets/Play-Regular.ttf")
 
+
+        self.message = Message("", self.font2, 0.08)
+
+
+        self.levelMessage = Message("Level: " + str(self.level), self.font2, 0.0)
 
         self.valButtons = [ValueButton()] * 4
         #setup button list
@@ -107,6 +120,11 @@ class ZQMain:
         self.redButton = RedButton()
         self.redButton.set_x(475)
         self.redButton.set_y(280)
+
+    def init_newlevel(self):
+        self.gameState = GameState.NewLevel
+        self.level += 1
+        self.message.set_message("Level " + str(self.level) + " started")
 
     def render_buttons(self, buttons, screen):
         buttonList.empty()
@@ -149,6 +167,151 @@ class ZQMain:
     def read_file(self, file_path):
         pass
 
+    def update(self, dt):
+
+        #update sprites
+        self.update_sprites()
+
+        #update current message
+        self.message.update(self.deltaTime)
+        self.levelMessage.update(self.deltaTime)
+
+        #Run New Level Logic
+        if self.gameState == GameState.NewLevel:
+            if self.mousePressed:
+                if not self.message.is_done():
+                    self.message.finish()
+                else:
+                    self.message.set_message("")
+                    self.gameState = GameState.PlayerTurn
+
+
+        if self.gameState == GameState.PlayerTurn:
+            if self.mousePressed:
+                self.valButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+                self.opButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+
+                if self.redButton.check_point( pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]):
+                    valButton = self.valButtonGroup.get_selected()
+                    opButton = self.opButtonGroup.get_selected()
+
+                    if valButton != None and opButton != None:
+
+                        self.value = valButton.get_value()
+                        self.operator = opButton.get_operator()
+
+                        opString = ""
+                        if self.operator == OperatorType.Add:
+                            opString = "Add by " + str(self.value)
+                            #self.fractionDisp.fraction.add_fraction(fraction)
+                        elif self.operator == OperatorType.Sub:
+                            opString = "Subtract by " + str(self.value)
+                            #self.fractionDisp.fraction.sub_fraction(fraction)
+                        elif self.operator == OperatorType.Mul:
+                            opString = "Multiply by " + str(self.value)
+                            #self.fractionDisp.fraction.mul_fraction(fraction)
+                        elif self.operator == OperatorType.Div:
+                            opString = "Divide by " + str(self.value)
+                        self.message.set_message(opString)
+
+                        self.gameState = GameState.PlayerTurnResolve1
+                        self.redButton.set_pressed(False)
+                        return
+
+                    self.redButton.set_pressed(False)
+
+
+        #Handle Player Turn Resolve logic
+        if self.gameState == GameState.PlayerTurnResolve1:
+
+            if self.mousePressed:
+                if not self.message.is_done():
+                    self.message.finish()
+                else:
+                    resultString = ""
+
+                    fraction = Fraction(self.valButtonGroup.get_selected().get_value(), 1)
+                    #Apply fraction to enemy
+                    if self.operator == OperatorType.Add:
+                        resultString = self.fractionDisp.fraction.add_fraction(fraction)
+                    elif self.operator == OperatorType.Sub:
+                        resultString = self.fractionDisp.fraction.sub_fraction(fraction)
+                    elif self.operator == OperatorType.Mul:
+                        resultString =  self.fractionDisp.fraction.mul_fraction(fraction)
+                    elif self.operator == OperatorType.Div:
+                        resultString = self.fractionDisp.fraction.div_fraction(fraction)
+
+                    self.message.set_message(resultString)
+                    self.gameState = GameState.PlayerTurnResolve2
+                    return
+
+        if self.gameState == GameState.PlayerTurnResolve2:
+            if self.mousePressed:
+                if not self.message.is_done():
+                    self.message.finish()
+                else:
+                    self.message.set_message("Enemy attacks")
+                    self.gameState = GameState.EnemyTurn
+                    return
+
+        if self.gameState == GameState.EnemyTurn:
+            if self.mousePressed:
+                if not self.message.is_done():
+                    self.message.finish()
+                else:
+                    chance = randint(0,1)
+                    if chance == 1:
+                        self.heathbar.minus()
+                        self.message.set_message("You were hit!")
+                    else:
+                        self.message.set_message("Enemy attack missed!")
+                    self.gameState = GameState.EnemyTurnResolve
+                    return
+
+        if self.gameState == GameState.EnemyTurnResolve:
+            if self.mousePressed:
+                if not self.message.is_done():
+                    self.message.finish()
+                else:
+                    if self.heathbar.get_health() <= 0:
+                        self.gameState = GameState.GameOver
+                        return
+                    else:
+                        self.gameState = GameState.PlayerTurn
+                        self.message.set_message("")
+                        return
+
+
+    def render(self, screen):
+
+        # Clear Display
+        screen.fill((100, 149, 237))
+
+        #Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
+        spaceBackground.draw(screen)
+
+        mainUI.draw(screen)
+
+        fractionDispList.draw(screen)
+
+        enemiesList.draw(screen)
+
+        self.render_buttons(self.valButtons, screen)
+        self.render_buttons(self.opButtons, screen)
+
+        self.render_operators(self.opButtons, screen)
+        self.render_values(self.valButtons, screen)
+
+
+        self.fractionDisp.render_fraction(screen, self.font2)
+
+        self.heathbar.render(screen)
+
+        self.message.render(screen, 40, 208)
+
+        self.levelMessage.render(screen, 520, 05)
+
+
     # The main game loop.
     def run(self):
         self.running = True
@@ -159,11 +322,23 @@ class ZQMain:
 
 
         self.init_sprites()
+        self.getTicksLastFrame = 0
+
+        self.init_newlevel()
+
+        self.operator = OperatorType.Unknown
+        self.value = 0
 
         while self.running:
             # Pump GTK messages.
             while Gtk.events_pending():
                 Gtk.main_iteration()
+
+                self.t = self.clock.get_time()
+                # deltaTime in seconds.
+                self.deltaTime = (self.t - self.getTicksLastFrame) / 1000.0
+
+            self.redButton.set_pressed(True)
 
             # Pump PyGame messages.
             for event in pygame.event.get():
@@ -175,46 +350,14 @@ class ZQMain:
                     self.mousePressed = True;
 
 
-                    self.valButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
-                    self.opButtonGroup.check_pressed(self.mousePressed, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
-
-                    if self.redButton.check_point( pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]):
-                        if self.mousePressed:
-                            valButton = self.valButtonGroup.get_selected()
-                            opButton = self.opButtonGroup.get_selected()
-                            if valButton != None and opButton != None:
-                                opType = opButton.get_operator()
-                                fraction = Fraction(valButton.get_value(), 1)
-                                if opType == OperatorType.Add:
-                                    self.fractionDisp.fraction.add_fraction(fraction)
-                                elif opType == OperatorType.Sub:
-                                    self.fractionDisp.fraction.sub_fraction(fraction)
-                                elif opType == OperatorType.Mul:
-                                    self.fractionDisp.fraction.mul_fraction(fraction)
-                                elif opType == OperatorType.Div:
-                                    self.fractionDisp.fraction.div_fraction(fraction)
-                                valButton.generate_value()
 
 
-            self.update_sprites()
+            #update game
+            self.update(self.deltaTime)
 
-            # Clear Display
-            screen.fill((100, 149, 237))
+            #render game
+            self.render(screen)
 
-            #Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
-            spaceBackground.draw(screen)
-
-            mainUI.draw(screen)
-
-            enemiesList.draw(screen)
-
-            self.render_buttons(self.valButtons, screen)
-            self.render_buttons(self.opButtons, screen)
-
-            self.render_operators(self.opButtons, screen)
-            self.render_values(self.valButtons, screen)
-
-            self.fractionDisp.render_fraction(screen, self.font2)
 
             self.mousePressed = False;
 
@@ -222,8 +365,11 @@ class ZQMain:
             # Flip Display
             pygame.display.flip()
 
+
+            self.getTicksLastFrame = self.t
+
             # Try to stay at 30 FPS
-            self.clock.tick(30)
+            self.clock.tick(60)
 
 
 # This function is called when the game is run directly from the command line:
