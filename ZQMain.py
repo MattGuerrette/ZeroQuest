@@ -85,9 +85,10 @@ class ZQMain:
         fractionDispList.add(self.fractionDisp.get_sprite())
 
 
-        self.font = Font(26, "assets/Play-Bold.ttf")
+        self.font = Font(36, "assets/Play-Bold.ttf")
         self.font2 = Font(20, "assets/Play-Regular.ttf")
 
+        self.gameOverMessage = Message("Game Over", self.font, 0.0)
 
         self.message = Message("", self.font2, 0.08)
 
@@ -174,6 +175,7 @@ class ZQMain:
 
         #update current message
         self.message.update(self.deltaTime)
+        self.gameOverMessage.update(self.deltaTime)
         self.levelMessage.update(self.deltaTime)
 
         #Run New Level Logic
@@ -275,11 +277,20 @@ class ZQMain:
                 else:
                     if self.heathbar.get_health() <= 0:
                         self.gameState = GameState.GameOver
+                        self.message.set_message("Click to continue?")
                         return
                     else:
                         self.gameState = GameState.PlayerTurn
                         self.message.set_message("")
                         return
+
+        if self.gameState == GameState.GameOver:
+            if self.mousePressed:
+                if not self.message.is_done():
+                    self.message.finish()
+                else:
+                    self.level = 0
+                    self.init_newlevel()
 
 
     def render(self, screen):
@@ -311,6 +322,8 @@ class ZQMain:
 
         self.levelMessage.render(screen, 520, 05)
 
+        if self.gameState == GameState.GameOver:
+           self.gameOverMessage.render(screen, 230, 35)
 
     # The main game loop.
     def run(self):

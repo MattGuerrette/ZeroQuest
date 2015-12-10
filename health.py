@@ -17,7 +17,7 @@ class HealthBar:
         self.x = x
         self.y = y
 
-        for i in range(0, 10):
+        for i in range(0, self.health_value):
             self.health_pieces[i] = HealthPiece()
             self.health_pieces[i].rect.x = self.x + 2
             self.health_pieces[i].rect.y = self.y + (self.health_gauge.rect.height) - (i+1) * (self.health_pieces[i].rect.height - 8) - 10
