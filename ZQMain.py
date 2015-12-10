@@ -10,6 +10,7 @@ from button import *
 from health import *
 from font import *
 from game import *
+from enemy import *
 from messagebox import *
 from fraction import *
 from buttongroup import *
@@ -56,12 +57,20 @@ class ZQMain:
         self.space2.rect.y = 0
 
         self.toaster = EvilToaster()
-        self.toaster.rect.x = 270
-        self.toaster.rect.y = (450/2 - 60) - self.toaster.image.get_height()/2
-
         self.robot = SmallRobot()
-        self.robot.rect.x = 270
-        self.robot.rect.y = (450/2 - 60) - self.robot.image.get_height()/2
+        self.antenna = AntennaBot()
+        self.fanbot = FanBot()
+
+        self.enemy1 = Enemy(self.robot)
+        self.enemy2 = Enemy(self.toaster)
+        self.enemy3 = Enemy(self.antenna)
+        self.enemy4 = Enemy(self.fanbot)
+        self.enemies = [Enemy(self.robot)] * 4
+        self.enemies[0] = self.enemy1
+        self.enemies[1] = self.enemy2
+        self.enemies[2] = self.enemy3
+        self.enemies[3] = self.enemy4
+
 
 
         self.fraction = Fraction(2, 3)
@@ -72,6 +81,8 @@ class ZQMain:
         self.fractionDisp.sprite.rect.y = 65
 
         self.heathbar = HealthBar(30, 240)
+
+        self.enemiesLeft = 2
 
 
         # Add the car to the list of objects
@@ -88,12 +99,12 @@ class ZQMain:
         self.font = Font(36, "assets/Play-Bold.ttf")
         self.font2 = Font(20, "assets/Play-Regular.ttf")
 
-        self.gameOverMessage = Message("Game Over", self.font, 0.0)
+        self.gameOverMessage = Message("Game Over", self.font, 0)
 
-        self.message = Message("", self.font2, 0.08)
+        self.message = Message("", self.font2, 4)
 
 
-        self.levelMessage = Message("Level: " + str(self.level), self.font2, 0.0)
+        self.levelMessage = Message("Level: " + str(self.level), self.font2, 0)
 
         self.valButtons = [ValueButton()] * 4
         #setup button list
@@ -101,7 +112,7 @@ class ZQMain:
         for i in range(0, 4):
             self.valButtons[i] = ValueButton()
             self.valButtons[i].set_x(BUTTONX_START + i * 95)
-            self.valButtons[i].set_y(240)
+            self.valButtons[i].set_y(340)
             self.valButtons[i].generate_value()
 
         self.opButtons = [OperatorButton()] * 4
@@ -112,7 +123,7 @@ class ZQMain:
 
         for i in range(0, 4):
             self.opButtons[i].set_x(BUTTONX_START + i * 95)
-            self.opButtons[i].set_y(340)
+            self.opButtons[i].set_y(240)
 
 
         self.valButtonGroup = ButtonGroup(self.valButtons)
@@ -124,8 +135,11 @@ class ZQMain:
 
     def init_newlevel(self):
         self.gameState = GameState.NewLevel
+        self.enemiesLeft = 3
         self.level += 1
+        self.levelMessage.set_message("Level: " + str(self.level))
         self.message.set_message("Level " + str(self.level) + " started")
+        self.heathbar.refresh()
 
     def render_buttons(self, buttons, screen):
         buttonList.empty()
@@ -168,10 +182,47 @@ class ZQMain:
     def read_file(self, file_path):
         pass
 
+    def spawn_enemy(self):
+        self.current_enemy = self.enemies[randint(0, 3)]
+
+        fraction = Fraction(0,1)
+        if self.level == 1:
+            fraction.numerator = randint(1, 9) + randint(1, 9)
+        elif self.level == 2:
+            fraction.numerator = (randint(3, 5)) * (randint(3,5))
+        elif self.level == 3:
+            fraction.numerator = (randint(3, 7)) * (randint(3,7))
+        elif self.level == 4:
+            rand = randint(2,10)
+            fraction.numerator = rand * rand
+        elif self.level == 5:
+            fraction.numerator = (randint(5, 9)) * (randint(5, 9))
+        elif self.level == 6:
+            fraction.numerator = randint(50, 100)
+        elif self.level == 7:
+            fraction.numerator = (2  * randint(1, 5) - 1)
+            fraction.denominator = 2
+        elif self.level == 8:
+            fraction.numerator = randint(1,10)
+            fraction.denominator = randint(1,10)
+            fraction.simplify()
+        elif self.level == 9:
+            fraction.numerator = randint(3, 7)
+            fraction.denominator = (randint(3, 7)) * (randint(3, 7))
+            fraction.simplify()
+        elif self.level <= 10:
+            fraction.numerator = (randint(2, 9)) * (randint(2, 9))
+            fraction.denominator = (randint(2, 9)) * (randint(2, 9))
+            fraction.simplify()
+
+        self.fractionDisp.fraction = fraction
+
     def update(self, dt):
 
         #update sprites
         self.update_sprites()
+
+        self.current_enemy.update(self.deltaTime)
 
         #update current message
         self.message.update(self.deltaTime)
@@ -243,9 +294,36 @@ class ZQMain:
                     elif self.operator == OperatorType.Div:
                         resultString = self.fractionDisp.fraction.div_fraction(fraction)
 
+                    self.valButtonGroup.get_selected().generate_value()
                     self.message.set_message(resultString)
-                    self.gameState = GameState.PlayerTurnResolve2
+                    if self.fractionDisp.fraction.is_zero():
+                        self.gameState = GameState.EnemyDefeated
+                    else:
+                        self.gameState = GameState.PlayerTurnResolve2
                     return
+
+        if self.gameState == GameState.EnemyDefeated:
+            if self.mousePressed:
+                if not self.message.is_done():
+                    self.message.finish()
+                else:
+                    self.message.set_message("Enemy defeated!")
+                    self.enemiesLeft -= 1
+                    self.gameState = GameState.EnemyDefeated2
+                    return
+
+        if self.gameState == GameState.EnemyDefeated2:
+            if self.mousePressed:
+                if not self.message.is_done():
+                    self.message.finish()
+                else:
+
+                    if self.enemiesLeft == 0:
+                        self.init_newlevel()
+
+                    self.spawn_enemy()
+                    self.gameState = GameState.PlayerTurn
+
 
         if self.gameState == GameState.PlayerTurnResolve2:
             if self.mousePressed:
@@ -305,7 +383,9 @@ class ZQMain:
 
         fractionDispList.draw(screen)
 
-        enemiesList.draw(screen)
+        #enemiesList.draw(screen)
+
+        self.current_enemy.render(screen)
 
         self.render_buttons(self.valButtons, screen)
         self.render_buttons(self.opButtons, screen)
@@ -338,6 +418,7 @@ class ZQMain:
         self.getTicksLastFrame = 0
 
         self.init_newlevel()
+        self.spawn_enemy()
 
         self.operator = OperatorType.Unknown
         self.value = 0

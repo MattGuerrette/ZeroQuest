@@ -1,16 +1,35 @@
 
+import pygame
+
+from pygame import sprite
 
 class Enemy:
 
-    def __init__(self, sprite, health):
+    def __init__(self, sprite):
         self.sprite = sprite
-        self.health = health; #health is actually the fraction
+        self.elapsed = 0
+        self.render1 = True
 
-    def check_dead(self):
-        if self.health.is_zero:
-            return True
+        self.sprite.image = pygame.transform.scale(self.sprite.image, (128,128))
+        self.sprite.image2 = pygame.transform.scale(self.sprite.image2, (128,128))
+        self.sprite.rect.x = 220
+        self.sprite.rect.y = (450/2 - 80) - self.sprite.image.get_height()/2
+
+
+    def get_sprite(self):
+        return self.sprite
+
+    def update(self, dt):
+        self.elapsed += 1
+        if self.elapsed >= 60:
+            self.render1 = not self.render1
+            self.elapsed = 0
+
+    def render(self, screen):
+        if self.render1:
+            screen.blit(self.sprite.image, (self.sprite.rect.x, self.sprite.rect.y))
         else:
-            return False
+            screen.blit(self.sprite.image2, (self.sprite.rect.x, self.sprite.rect.y))
 
 class EnemyGroup:
 

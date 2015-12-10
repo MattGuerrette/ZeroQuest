@@ -3,7 +3,7 @@
 
 class Message:
 
-    def __init__(self, message, font, speed = 0.2):
+    def __init__(self, message, font, speed = 10):
         self.message = message
         self.elapsed = 0.0
         self.font = font
@@ -32,17 +32,17 @@ class Message:
         self.render_str = self.message
 
     def update(self, dt):
-        self.elapsed += dt
+        self.elapsed += 1
         rslen = 0
 
-        if self.type_speed <= 0.01:
+        if self.type_speed == 0:
             self.render_str = self.message
 
         if self.elapsed >= self.type_speed:
             rslen = len(self.render_str)
             if rslen < len(self.message):
                 self.render_str += self.message[rslen]
-            self.elapsed = 0.0
+            self.elapsed = 0
 
     def render(self, surface, x, y):
         fontsurface = self.font.get_text(self.render_str)

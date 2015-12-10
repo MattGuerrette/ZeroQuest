@@ -24,10 +24,6 @@ class ButtonGroup:
             if pressed:
                 self.buttons[index].set_pressed(True)
 
-        # if pressed:
-        #     if index != -1:
-        #         self.buttons[index].set_pressed(True)
-
     def get_selected(self):
         if self.current != -1:
             return self.buttons[self.current]

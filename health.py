@@ -30,6 +30,11 @@ class HealthBar:
     def get_health(self):
         return self.health_value
 
+    def refresh(self):
+        for i in range(self.health_value, 10):
+            self.add()
+        self.health_value = 10
+
     def minus(self):
         self.health_list.remove(self.health_pieces[self.health_value-1])
         if self.health_value >= 1:

@@ -39,12 +39,16 @@ class Fraction:
             self.denominator = self.denominator / 7
             isTrue = True
 
+        if self.denominator < 0:
+            self.denominator *= -1
+            self.numerator *= -1
+
         return isTrue
 
     def add_fraction(self, other):
         self.numerator = self.numerator * other.denominator + other.numerator * self.denominator
         self.denominator = self.denominator * other.denominator
-        #self.simplify()
+        self.simplify()
 
         if other.numerator == 0:
             return "Add was not very effective"
@@ -57,7 +61,7 @@ class Fraction:
     def sub_fraction(self, other):
         self.numerator = self.numerator * other.denominator - other.numerator * self.denominator
         self.denominator = self.denominator * other.denominator
-        #self.simplify()
+        self.simplify()
 
         if other.numerator == 0:
             return "Subtract was not very effective"
@@ -100,7 +104,7 @@ class Fraction:
         divWidth = font.text_size(self.divText)[0]
         divSurface = font.get_text(self.divText)
         surface.blit(numSurface, (x + (divWidth/2 - numWidth/2) - 5,y))
-        if self.denominator > 1 and self.numerator >= 1:
+        if self.denominator != 1:
             surface.blit(divSurface, ((x-5),y+5))
             surface.blit(denomSurface, (x + (divWidth/2 - denWidth/2) - 5,y+25))
 

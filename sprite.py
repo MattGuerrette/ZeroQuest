@@ -37,6 +37,34 @@ class EvilToaster(pygame.sprite.Sprite):
         # Pass in the color of the car, and its x and y position, width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.image.load("assets/eviltoaster.png").convert_alpha()
+        self.image2 = pygame.image.load("assets/eviltoaster2.png").convert_alpha()
+
+        # Fetch the rectangle object that has the dimensions of the image.
+        self.rect = self.image.get_rect()
+
+class AntennaBot(pygame.sprite.Sprite):
+    def __init__(self):
+        # Call the parent class (Sprite) constructor
+        pygame.sprite.Sprite.__init__(self)
+
+        # Pass in the color of the car, and its x and y position, width and height.
+        # Set the background color and set it to be transparent
+        self.image = pygame.image.load("assets/antennabot.png").convert_alpha()
+        self.image2 = pygame.image.load("assets/antennabot2.png").convert_alpha()
+
+        # Fetch the rectangle object that has the dimensions of the image.
+        self.rect = self.image.get_rect()
+
+class FanBot(pygame.sprite.Sprite):
+
+    def __init__(self):
+        # Call the parent class (Sprite) constructor
+        pygame.sprite.Sprite.__init__(self)
+
+        # Pass in the color of the car, and its x and y position, width and height.
+        # Set the background color and set it to be transparent
+        self.image = pygame.image.load("assets/fanbot.png").convert_alpha()
+        self.image2 = pygame.image.load("assets/fanbot2.png").convert_alpha()
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
@@ -128,9 +156,11 @@ class SmallRobot(pygame.sprite.Sprite):
         # Pass in the color of the car, and its x and y position, width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.image.load("assets/SmallRobot.png").convert_alpha()
+        self.image2 = pygame.image.load("assets/SmallRobot2.png").convert_alpha()
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
+
 
 class HealthGauge(pygame.sprite.Sprite):
 

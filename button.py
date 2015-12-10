@@ -92,7 +92,29 @@ class ValueButton(Button):
             self.value = Value
 
         def generate_value(self):
-            self.value = randint(0, 10)
+            chance = randint(0, 20)
+            if chance < 1:
+                self.value = 0
+            elif chance < 2:
+                self.value = 1
+            elif chance < 6:
+                self.value = 2
+            elif chance < 9:
+                self.value = 3
+            elif chance < 12:
+                self.value = 4
+            elif chance < 14:
+                self.value = 5
+            elif chance < 16:
+                self.value = 6
+            elif chance < 18:
+                self.value = 7
+            elif chance < 19:
+                self.value = 8
+            elif chance < 20:
+                self.value = 9
+            else:
+                self.value = 10
 
         def get_value(self):
             return self.value

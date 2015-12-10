@@ -1,4 +1,4 @@
 
 
 class GameState:
-    PlayerTurn, PlayerTurnResolve1, PlayerTurnResolve2, EnemyTurn, EnemyTurnResolve, NewLevel, GameOver = range(7)
+    PlayerTurn, PlayerTurnResolve1, PlayerTurnResolve2, EnemyDefeated, EnemyDefeated2, EnemyTurn, EnemyTurnResolve, NewLevel, GameOver = range(9)
