@@ -101,7 +101,7 @@ class ZQMain:
 
         self.gameOverMessage = Message("Game Over", self.font, 0)
 
-        self.message = Message("", self.font2, 4)
+        self.message = Message("", self.font2, 1)
 
 
         self.levelMessage = Message("Level: " + str(self.level), self.font2, 0)
@@ -463,7 +463,7 @@ class ZQMain:
             self.getTicksLastFrame = self.t
 
             # Try to stay at 30 FPS
-            self.clock.tick(60)
+            self.clock.tick(30)
 
 
 # This function is called when the game is run directly from the command line:

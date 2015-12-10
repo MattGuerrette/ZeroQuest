@@ -103,10 +103,10 @@ class Fraction:
         denWidth = font.text_size(str(self.denominator))[0]
         divWidth = font.text_size(self.divText)[0]
         divSurface = font.get_text(self.divText)
-        surface.blit(numSurface, (x + (divWidth/2 - numWidth/2) - 5,y))
+        surface.blit(numSurface, (x + (divWidth/2 - numWidth/2) - 10,y))
         if self.denominator != 1:
-            surface.blit(divSurface, ((x-5),y+5))
-            surface.blit(denomSurface, (x + (divWidth/2 - denWidth/2) - 5,y+25))
+            surface.blit(divSurface, ((x-10),y+10))
+            surface.blit(denomSurface, (x + (divWidth/2 - denWidth/2) - 10,y+50))
 
     def get_size(self, font):
         numSize = font.text_size(str(self.numerator))

@@ -3,7 +3,7 @@
 
 class Message:
 
-    def __init__(self, message, font, speed = 10):
+    def __init__(self, message, font, speed = 1):
         self.message = message
         self.elapsed = 0.0
         self.font = font

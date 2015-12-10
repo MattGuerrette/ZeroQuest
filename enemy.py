@@ -21,7 +21,7 @@ class Enemy:
 
     def update(self, dt):
         self.elapsed += 1
-        if self.elapsed >= 60:
+        if self.elapsed >= 10:
             self.render1 = not self.render1
             self.elapsed = 0
 
