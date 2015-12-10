@@ -24,7 +24,7 @@ buttonList = pygame.sprite.Group()
 mainUI = pygame.sprite.Group()
 fractionDispList = pygame.sprite.Group()
 
-BUTTONX_START = 90
+BUTTONX_START = 180
 
 
 class ZQMain:
@@ -77,10 +77,10 @@ class ZQMain:
 
 
         self.fractionDisp = FractionDisplay()
-        self.fractionDisp.sprite.rect.x = 350
-        self.fractionDisp.sprite.rect.y = 65
+        self.fractionDisp.sprite.rect.x = 700
+        self.fractionDisp.sprite.rect.y = 130
 
-        self.heathbar = HealthBar(30, 240)
+        self.heathbar = HealthBar(60, 500)
 
         self.enemiesLeft = 2
 
@@ -96,8 +96,8 @@ class ZQMain:
         fractionDispList.add(self.fractionDisp.get_sprite())
 
 
-        self.font = Font(36, "assets/Play-Bold.ttf")
-        self.font2 = Font(20, "assets/Play-Regular.ttf")
+        self.font = Font(84, "assets/Play-Bold.ttf")
+        self.font2 = Font(40, "assets/Play-Regular.ttf")
 
         self.gameOverMessage = Message("Game Over", self.font, 0)
 
@@ -111,8 +111,8 @@ class ZQMain:
 
         for i in range(0, 4):
             self.valButtons[i] = ValueButton()
-            self.valButtons[i].set_x(BUTTONX_START + i * 95)
-            self.valButtons[i].set_y(340)
+            self.valButtons[i].set_x(BUTTONX_START + i * 190)
+            self.valButtons[i].set_y(680)
             self.valButtons[i].generate_value()
 
         self.opButtons = [OperatorButton()] * 4
@@ -122,16 +122,16 @@ class ZQMain:
         self.opButtons[3] = OperatorButton(OperatorType.Div)
 
         for i in range(0, 4):
-            self.opButtons[i].set_x(BUTTONX_START + i * 95)
-            self.opButtons[i].set_y(240)
+            self.opButtons[i].set_x(BUTTONX_START + i * 190)
+            self.opButtons[i].set_y(480)
 
 
         self.valButtonGroup = ButtonGroup(self.valButtons)
         self.opButtonGroup = ButtonGroup(self.opButtons)
 
         self.redButton = RedButton()
-        self.redButton.set_x(475)
-        self.redButton.set_y(280)
+        self.redButton.set_x(950)
+        self.redButton.set_y(560)
 
     def init_newlevel(self):
         self.gameState = GameState.NewLevel
@@ -398,9 +398,9 @@ class ZQMain:
 
         self.heathbar.render(screen)
 
-        self.message.render(screen, 40, 208)
+        self.message.render(screen, 80, 416)
 
-        self.levelMessage.render(screen, 520, 05)
+        self.levelMessage.render(screen, 1040, 10)
 
         if self.gameState == GameState.GameOver:
            self.gameOverMessage.render(screen, 230, 35)
@@ -470,7 +470,7 @@ class ZQMain:
 # ./TestGame.py
 def main():
     pygame.init()
-    pygame.display.set_mode((600, 450))
+    pygame.display.set_mode((1200, 900))
     game = ZQMain()
     game.run()
 

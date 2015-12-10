@@ -11,6 +11,7 @@ class MainUI(pygame.sprite.Sprite):
         # Pass in the color of the car, and its x and y position, width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.image.load("assets/mainui.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (1200, 900))
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
@@ -24,7 +25,7 @@ class SpaceBackground(pygame.sprite.Sprite):
         # Pass in the color of the car, and its x and y position, width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.image.load("assets/spacebg.png").convert_alpha()
-
+        self.image = pygame.transform.scale(self.image, (1200, 312))
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
 
@@ -69,18 +70,6 @@ class FanBot(pygame.sprite.Sprite):
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
 
-class ScreenPanel(pygame.sprite.Sprite):
-
-    def __init__(self):
-        # Call the parent class (Sprite) constructor
-        pygame.sprite.Sprite.__init__(self)
-
-        # Pass in the color of the car, and its x and y position, width and height.
-        # Set the background color and set it to be transparent
-        self.image = pygame.image.load("assets/screen.png").convert_alpha()
-
-        # Fetch the rectangle object that has the dimensions of the image.
-        self.rect = self.image.get_rect()
 
 class ButtonOn(pygame.sprite.Sprite):
 
@@ -91,6 +80,7 @@ class ButtonOn(pygame.sprite.Sprite):
         # Pass in the color of the car, and its x and y position, width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.image.load("assets/buttonon.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (166, 174))
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
@@ -104,6 +94,7 @@ class ButtonOff(pygame.sprite.Sprite):
         # Pass in the color of the car, and its x and y position, width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.image.load("assets/buttonoff.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (166, 174))
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
@@ -117,6 +108,7 @@ class RedButtonOn(pygame.sprite.Sprite):
         # Pass in the color of the car, and its x and y position, width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.image.load("assets/redbutton.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (206, 184))
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
@@ -130,6 +122,7 @@ class RedButtonOff(pygame.sprite.Sprite):
         # Pass in the color of the car, and its x and y position, width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.image.load("assets/redbuttondown.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (206, 184))
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
@@ -143,6 +136,7 @@ class DisplayScreen(pygame.sprite.Sprite):
         # Pass in the color of the car, and its x and y position, width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.image.load("assets/screen.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (192, 128))
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
@@ -171,6 +165,7 @@ class HealthGauge(pygame.sprite.Sprite):
         # Pass in the color of the car, and its x and y position, width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.image.load("assets/healthempty.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (80, 344))
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()
@@ -184,6 +179,7 @@ class HealthPiece(pygame.sprite.Sprite):
         # Pass in the color of the car, and its x and y position, width and height.
         # Set the background color and set it to be transparent
         self.image = pygame.image.load("assets/healthpiece.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (72, 48))
 
         # Fetch the rectangle object that has the dimensions of the image.
         self.rect = self.image.get_rect()

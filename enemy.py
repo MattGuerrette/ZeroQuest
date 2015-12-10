@@ -10,10 +10,10 @@ class Enemy:
         self.elapsed = 0
         self.render1 = True
 
-        self.sprite.image = pygame.transform.scale(self.sprite.image, (128,128))
-        self.sprite.image2 = pygame.transform.scale(self.sprite.image2, (128,128))
-        self.sprite.rect.x = 220
-        self.sprite.rect.y = (450/2 - 80) - self.sprite.image.get_height()/2
+        self.sprite.image = pygame.transform.scale(self.sprite.image, (256,256))
+        self.sprite.image2 = pygame.transform.scale(self.sprite.image2, (256,256))
+        self.sprite.rect.x = 440
+        self.sprite.rect.y = (900/2 - 160) - self.sprite.image.get_height()/2
 
 
     def get_sprite(self):

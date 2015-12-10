@@ -20,7 +20,7 @@ class HealthBar:
         for i in range(0, self.health_value):
             self.health_pieces[i] = HealthPiece()
             self.health_pieces[i].rect.x = self.x + 2
-            self.health_pieces[i].rect.y = self.y + (self.health_gauge.rect.height) - (i+1) * (self.health_pieces[i].rect.height - 8) - 10
+            self.health_pieces[i].rect.y = self.y + (self.health_gauge.rect.height) - (i+1) * (self.health_pieces[i].rect.height - 16) - 20
             self.health_list.add(self.health_pieces[i])
 
     def render(self, surface):

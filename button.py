@@ -1,4 +1,6 @@
 
+ #coding=latin-1
+
 from sprite import ButtonOn
 from sprite import ButtonOff
 from sprite import RedButtonOn
@@ -77,11 +79,11 @@ class OperatorButton(Button):
             opSize = font.text_size("-")
             surface.blit(font.get_text("-"), (self.rect.x + (self.rect.width/2 - opSize[0]/2), self.rect.y + 25))
         elif self.operator == OperatorType.Mul:
-            opSize = font.text_size("*")
-            surface.blit(font.get_text("*"), (self.rect.x + (self.rect.width/2 - opSize[0]/2), self.rect.y + 25))
+            opSize = font.text_size("x")
+            surface.blit(font.get_text("x"), (self.rect.x + (self.rect.width/2 - opSize[0]/2), self.rect.y + 25))
         elif self.operator == OperatorType.Div:
-            opSize = font.text_size("/")
-            surface.blit(font.get_text("/"), (self.rect.x + (self.rect.width/2 - opSize[0]/2), self.rect.y + 25))
+            opSize = font.text_size("÷")
+            surface.blit(font.get_text("÷"), (self.rect.x + (self.rect.width/2 - opSize[0]/2), self.rect.y + 25))
 
 class ValueButton(Button):
 

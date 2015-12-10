@@ -138,4 +138,4 @@ class FractionDisplay:
 
         def render_fraction(self, surface, font):
             fractionSize = self.fraction.get_size(font)
-            self.fraction.render(font, surface, self.sprite.rect.x + (self.sprite.rect.width/2 - fractionSize[0]/2) - 5, self.sprite.rect.y + 15)
+            self.fraction.render(font, surface, self.sprite.rect.x + (self.sprite.rect.width/2 - fractionSize[0]/2) - 10, self.sprite.rect.y + 30)
