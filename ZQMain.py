@@ -210,7 +210,7 @@ class ZQMain:
             fraction.numerator = randint(3, 7)
             fraction.denominator = (randint(3, 7)) * (randint(3, 7))
             fraction.simplify()
-        elif self.level <= 10:
+        else:
             fraction.numerator = (randint(2, 9)) * (randint(2, 9))
             fraction.denominator = (randint(2, 9)) * (randint(2, 9))
             fraction.simplify()
